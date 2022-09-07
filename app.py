@@ -5,7 +5,7 @@ from flask import Flask, render_template, url_for, request
 from get_price import get_prices
 
 app = Flask(__name__)
-load_dotenv()
+load_dotenv('api.env')
 
 api_key = environ.get('API_KEY')
 url = "https://maps.googleapis.com/maps/api/distancematrix/json"
