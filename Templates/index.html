@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <title>InfoTrip</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/style.css">
+
+  </head>
+  <body>
+    <div class="box col-sm-4 mx-auto">
+      <form action="{{ url_for('index') }}" class="row g-3" method="POST">
+          <div class="col-md-3">
+              <input type="text" id="start" name="start" class="form-control" placeholder="Start" value="{% if start %} {{ start }} {% endif %}">
+          </div>
+          <div class="col-md-3">
+              <input type="text" id="destination" name="destination" class="form-control" placeholder="Destination" value="{% if destination %} {{ destination }} {% endif %}">
+          </div>
+          <div class="col-md-3">
+              <input type="text" id="fuel" name="fuel" class="form-control" placeholder="l/100km" value="{% if fuel %} {{ fuel }} {% endif %}">
+          </div>
+          <select class="form-select col-md" name="fuel_type" aria-label="Default select example">
+              <option {% if fuel_type == '95' %} selected {% endif %} value="95">95</option>
+              <option {% if fuel_type == '98' %} selected {% endif %} value="98">98</option>
+              <option {% if fuel_type == 'on' %} selected {% endif %} value="on">on</option>
+              <option {% if fuel_type == 'on_plus' %} selected {% endif %} value="on_plus">on+</option>
+              <option {% if fuel_type == 'lpg' %} selected {% endif %} value="lpg">lpg</option>
+          </select>
+          <div class="col-md">
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form>
+
+      {% if distance and time %}
+      <div class="box_result row">
+        <div class="col-md">Distance: {{ distance }}</div>
+        <div class="col-md">Time:  {{ time }}</div>
+        {% if fuelPrice %}
+        <div class="col-md">avgPrice: {{ fuelPrice }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div> 
+    <div id="map"></div>
+
+    <!-- SCRIPTS -->
+    <!-- BOOSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <!-- AUTOCOMPLETE -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initAutocomplete&libraries=places&v=weekly"></script>
+    <script>
+        function initialize() {
+          var input = document.getElementById('start');
+          var input_destination = document.getElementById('destination');
+          new google.maps.places.Autocomplete(input);
+          new google.maps.places.Autocomplete(input_destination);
+        }
+        
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <!-- GOOGLE MAP -->
+    <script>
+      const map = new google.maps.Map(document.getElementById("map"), {
+          center: new google.maps.LatLng(52.237049, 21.017532),
+          zoom: 10,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
+      
+      const directionsService = new google.maps.DirectionsService();
+      
+      directionsService.route(
+          {
+                  origin: "{{ start }}",
+                  destination: "{{ destination }}",
+                  travelMode: "DRIVING",
+          },
+          (response, status) => {
+              if (status === "OK") {
+      
+                  new google.maps.DirectionsRenderer({
+                      suppressMarkers: true,
+                      directions: response,
+                      map: map,
+                    });
+              }
+          }
+      )
+    </script>
+
+    <!-- END SCRIPTS -->
+  </body>
+</html>
