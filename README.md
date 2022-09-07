@@ -4,7 +4,8 @@
 -Python\
 -Flask,BeautifulSoup\
 -HTML,CSS,JS\
--Jinja
+-Jinja\
+-Google API
 
 ### Description
 The program takes the start and end points and then calculates the route information, including the price of the fuel needed, based on the current fuel prices scraped from "https://www.autocentrum.pl/paliwa/ceny-paliw/"
