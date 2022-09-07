@@ -1,9 +1,9 @@
 ## Route-info-with-fuel-cost-API-bs4
 
 ### Technology used
--Python
--Flask,BeautifulSoup
--HTML,CSS,JS
+-Python\
+-Flask,BeautifulSoup\
+-HTML,CSS,JS\
 -Jinja
 
 ### Description
